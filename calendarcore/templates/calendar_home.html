@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+
+    <link href="{% static 'calendarcore/core/main.css' %}" rel="stylesheet" />
+    <link
+      href="{% static 'calendarcore/daygrid/main.css' %}"
+      rel="stylesheet"
+    />
+
+    <script src="{% static 'calendarcore/core/main.js' %}"></script>
+    <script src="{% static 'calendarcore/daygrid/main.js' %}"></script>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <!-- <form action="" method="POST">
+        {% csrf_token %}
+        <input type="date" name="date" required />
+        <button type="submit">Submit</button>
+      </form> -->
+      <h2>Date: {{context.date}}, {{context.isoday}}</h2>
+      {% if isleap %}
+      <h3>This is a Leap Year!</h3>
+
+      {% endif %}
+      <h2>
+        It is {{context.nthday}} day of the year {{context.date.year}} and
+        {{context.isoweek}} week of the year {{context.isoyear}}
+      </h2>
+      <h2>It has been {{context.ordinal}} days since 1/1/1</h2>
+      <h2>
+        {{context.days_remaining}} days remaining for new year,
+        {{context.weeks_remaining}} weeks remaining for new year...
+      </h2>
+
+      <form action="" method="POST">
+        {% csrf_token %} {{context.date_form.date.errors}}
+        <label for="id_date">Date : </label>
+        <input type="date" name="date" required="" id="id_date" />
+        <input type="submit" value="Submit" />
+      </form>
+      {% if html_cal %}
+      <div id="calendar"></div>
+      {% endif %}
+      <div id="calendar"></div>
+      <div id="hist_events_div"></div>
+    </div>
+
+    <!-- <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var calendarEl = document.getElementById("calendar");
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          plugins: ["dayGrid"],
+        });
+
+        calendar.render();
+      });
+    </script> -->
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+      integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+      crossorigin="anonymous"
+    ></script>
+    {{context|json_script:"context"}}
+    <script>
+      //Getting context
+      const context = JSON.parse(
+        document.getElementById("context").textContent
+      );
+
+      //Calendar innerHTML function
+      const calendar_html = () => {
+        const calendar = document.getElementById("calendar");
+        calendar.innerHTML = context.html_cal;
+      };
+
+      //Historical Events innerHTML function
+      const historical_events = () => {
+        const hist_events_div = document.getElementById("hist_events_div");
+        var final_html = [];
+        final_html.push("<ol>");
+        for (i = 0; i < context.hist_events.length; i++) {
+          final_html.push(`<li>${context.hist_events[i]}</li>`);
+        }
+        final_html.push("</ol>");
+        join_html = final_html.join("");
+        hist_events_div.innerHTML = join_html;
+      };
+
+      calendar_html();
+      historical_events();
+    </script>
+  </body>
+</html>
